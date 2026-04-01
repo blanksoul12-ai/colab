@@ -6,18 +6,20 @@ on:
     - cron: '0 18 * * *'
   workflow_dispatch:
 
+# 新增這部分，強制讓所有 Actions 使用 Node.js 24 執行
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   run_scraper:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        # 將 v3 改為 v4
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          # 指定 Python 版本，並將 v4 改為 v5
           python-version: '3.11'
 
       - name: Install dependencies
