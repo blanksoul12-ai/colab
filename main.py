@@ -14,7 +14,7 @@ try:
 	creds = Credentials.from_service_account_file('service_account.json', scopes=scope) 
 	gc = gspread.authorize(creds) 
 
-exceptException as e: 
+except Exception as e: 
 	print(f"驗證失敗，請檢查金鑰設定: {e}") 
 	exit(1)
 
