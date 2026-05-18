@@ -2,17 +2,18 @@ name: Auto Update Scraper
 
 on:
   schedule:
-    # 每天台灣時間凌晨 2:00 執行 (UTC 18:00)
-    - cron: '0 17 * * 0'
+    # 每天台灣/香港時間凌晨 2:00 執行
+    # UTC 時間 = 前一日 18:00
+    - cron: '0 18 * * *'
   workflow_dispatch:
 
-# 新增這部分，強制讓所有 Actions 使用 Node.js 24 執行
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   run_scraper:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,13 +22,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install requests pandas gspread google-auth beautifulsoup4
 
       - name: Create JSON Key
-        run: echo '${{ secrets.GCP_SA_KEY }}' > service_account.json
+        run: |
+          echo '${{ secrets.GCP_SA_KEY }}' > service_account.json
 
       - name: Run Scraper
         run: python main.py
